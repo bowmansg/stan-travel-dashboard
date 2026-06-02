@@ -43,5 +43,102 @@ function renderSchedule(schedule){return `<section class="detail-section"><div c
 function renderNotes(notes){if(!notes.length)return "";return `<section class="detail-section">${notes.map(n=>detailSection(n.title||"Note",n.category,{text:"NT",cls:""},[detailRow("Note",n.note)])).join("")}</section>`}
 function render(data){const trip=data.trip||{},flights=data.flights||[],cars=data.rentalCars||[],hotels=data.hotels||[],schedule=data.schedule||[],notes=data.notes||[];if(!data.trip){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Trip not found for <strong>${esc(tripId)}</strong>. Check the Trips tab and tripId.`;return}document.getElementById("app").className="";document.getElementById("app").innerHTML=`<div class="topbar"><div class="topline"><h1>${esc(trip.tripName||trip.primaryCity||"Trip")}</h1><div class="date-range">${esc(tripRange(trip.startDate,trip.endDate))}</div></div><div class="subline">${esc([trip.primaryCity,trip.traveler].filter(has).join(" · ")||trip.subtitle||"")}</div></div><section class="executive"><div class="section-head"><div class="iconbox">📋</div><div><h2>Executive Summary</h2><p>All bookings at a glance</p></div></div><div class="summary-grid"><div class="info-tile"><div class="eyebrow">Trip Dates</div><div class="tile-main">${esc(tripRange(trip.startDate,trip.endDate))}</div><div class="tile-sub">${esc([nights(trip.startDate,trip.endDate),trip.primaryCity].filter(has).join(" · "))}</div></div><div class="info-tile"><div class="eyebrow">Traveler</div><div class="tile-main">${esc(initialsName(trip.traveler)||trip.traveler||"Stan")}</div><div class="tile-sub">${esc(trip.subtitle||"")}</div></div></div>${renderFlightSummary(flights)}${renderCarSummary(cars)}${renderHotelSummary(hotels)}${(!flights.length&&!cars.length&&!hotels.length)?`<div class="empty">No reservation details added yet.</div>`:""}</section>${renderFlightDetails(flights)}${renderCarDetails(cars)}${renderHotelDetails(hotels)}${renderSchedule(schedule)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets</div>`}
 async function loadTrip(){try{const url=`${WEB_APP_URL}?action=trip&tripId=${encodeURIComponent(tripId)}`;const res=await fetch(url);if(!res.ok)throw new Error("Network response was not ok");const json=await res.json();if(!json.ok)throw new Error(json.error||"Unknown error");render(json.data)}catch(err){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Could not load trip data.<br><br>${esc(err.message)}`;}}
-loadTrip();
+function travelLogoFor(name, type){
+ const s = val(name).toLowerCase();
+
+ if(type === "flight"){
+  if(s.includes("united")) return "assets/logos/united.svg";
+ }
+
+ if(type === "car"){
+  if(s.includes("enterprise")) return "assets/logos/enterprise.svg";
+ }
+
+ if(type === "hotel"){
+  if(s.includes("marriott")) return "assets/logos/marriott.svg";
+  if(s.includes("fairfield")) return "assets/logos/marriott.svg";
+  if(s.includes("courtyard")) return "assets/logos/marriott.svg";
+  if(s.includes("residence inn")) return "assets/logos/marriott.svg";
+  if(s.includes("springhill")) return "assets/logos/marriott.svg";
+  if(s.includes("towneplace")) return "assets/logos/marriott.svg";
+  if(s.includes("sheraton")) return "assets/logos/marriott.svg";
+  if(s.includes("westin")) return "assets/logos/marriott.svg";
+ }
+
+ return "";
+}
+
+function applyTravelLogos(data){
+ if(!document.getElementById("travel-logo-style")){
+  const style = document.createElement("style");
+  style.id = "travel-logo-style";
+  style.textContent = `
+   .brand.logo-brand{
+    width:82px !important;
+    height:34px !important;
+    min-width:82px !important;
+    padding:4px 7px !important;
+    background:#ffffff !important;
+    border:1px solid #dcdedb !important;
+    color:transparent !important;
+    box-shadow:0 1px 4px rgba(15,23,42,.06);
+   }
+   .brand.logo-brand img{
+    max-width:68px;
+    max-height:24px;
+    width:auto;
+    height:auto;
+    display:block;
+    object-fit:contain;
+   }
+  `;
+  document.head.appendChild(style);
+ }
+
+ function replaceBrand(el, name, type){
+  if(!el) return;
+  const logo = travelLogoFor(name, type);
+  if(!logo) return;
+
+  el.classList.add("logo-brand");
+  el.innerHTML = `<img src="${logo}" alt="${esc(name)} logo">`;
+ }
+
+ const flights = data.flights || [];
+ const cars = data.rentalCars || [];
+ const hotels = data.hotels || [];
+
+ const flightName = flights.length ? flights[0].airline : "";
+ const carName = cars.length ? cars[0].company : "";
+ const hotelName = hotels.length ? hotels[0].hotelName : "";
+
+ document.querySelectorAll(".card-label .brand.flight").forEach(el => replaceBrand(el, flightName, "flight"));
+ document.querySelectorAll(".card-label .brand.car").forEach(el => replaceBrand(el, carName, "car"));
+ document.querySelectorAll(".card-label .brand.hotel").forEach(el => replaceBrand(el, hotelName, "hotel"));
+
+ const flightDetailBrands = document.querySelectorAll(".accordion-title .brand.flight");
+ flightDetailBrands.forEach((el, index) => {
+  const f = flights[index] || flights[0] || {};
+  replaceBrand(el, f.airline || flightName, "flight");
+ });
+
+ const carDetailBrands = document.querySelectorAll(".accordion-title .brand.car");
+ carDetailBrands.forEach((el, index) => {
+  const c = cars[index] || cars[0] || {};
+  replaceBrand(el, c.company || carName, "car");
+ });
+
+ const hotelDetailBrands = document.querySelectorAll(".accordion-title .brand.hotel");
+ hotelDetailBrands.forEach((el, index) => {
+  const h = hotels[index] || hotels[0] || {};
+  replaceBrand(el, h.hotelName || hotelName, "hotel");
+ });
+}
+
+const originalRenderWithLogos = render;
+render = function(data){
+ originalRenderWithLogos(data);
+ applyTravelLogos(data);
+};
+  loadTrip();
 </script></body></html>
