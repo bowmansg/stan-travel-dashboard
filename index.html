@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Stan Travel Dashboard</title>
-<!-- dashboard-version: 2026-06-08-v6.1-flightExtras-hotfix -->
+<!-- dashboard-version: 2026-06-08-v7-short-rental-summary-rich-details -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -109,6 +109,11 @@ function cleanAirportName(x,fallback){let s=val(x); if(!s)return fallback||""; s
 function airportCode(x){const s=val(x); const p=s.match(/\(([A-Z]{3})\)/); if(p)return p[1]; const m=s.match(/\b[A-Z]{3}\b/); return m?m[0]:""}
 function airportPretty(code){const m={BUF:"Buffalo Airport",ROC:"Rochester Airport",ORD:"Chicago O’Hare",BOS:"Boston Logan",PVD:"Providence Airport",DTW:"Detroit Metro",MDW:"Chicago Midway",YYZ:"Toronto Pearson",YUL:"Montréal Trudeau",LGA:"LaGuardia",JFK:"JFK",EWR:"Newark",MSP:"Minneapolis–Saint Paul",DEN:"Denver",LAX:"Los Angeles",SFO:"San Francisco",SEA:"Seattle–Tacoma",PHX:"Phoenix",DFW:"Dallas/Fort Worth",IAH:"Houston Intercontinental",IAD:"Washington Dulles",DCA:"Reagan National",BWI:"Baltimore/Washington",ATL:"Atlanta",CLT:"Charlotte",MCO:"Orlando",TPA:"Tampa",FLL:"Fort Lauderdale",MIA:"Miami"};return m[val(code).toUpperCase()]||""}
 function airportDisplay(location,fallback){const code=airportCode(location)||airportCode(fallback); let name=cleanAirportName(location,fallback); const pretty=airportPretty(code); if(code && (name==="Airport"||name===`${code} Airport`||name===`Airport (${code})`||/^airport/i.test(name)||val(location).toUpperCase()===code)) return `${pretty||name||"Airport"} (${code})`; return name}
+function airportSummaryLabel(location,fallback){const code=airportCode(location)||airportCode(fallback); const pretty=airportPretty(code); if(code)return `${pretty||cleanAirportName(location,fallback)||"Airport"} (${code})`; return cleanAirportName(location,fallback)}
+function firstVal(obj,keys){for(const k of keys){if(has(obj&&obj[k]))return val(obj[k])}return ""}
+function moneyVal(x){return val(x).replace(/^\$/,'$')}
+function detailLine(label,value){return has(value)?`<div class="extra-line"><strong>${esc(label)}:</strong> ${esc(value)}</div>`:""}
+function detailLinkLine(label,value,href){return has(value)?`<div class="extra-line"><strong>${esc(label)}:</strong> <a href="${esc(href)}" target="_blank" rel="noopener">${esc(value)}</a></div>`:""}
 function addressHtml(address){const a=cleanAddress(address); if(!a)return ""; const parts=a.split(/,\s*/).filter(Boolean); if(parts.length>=3){return `${esc(parts[0])}<br>${esc(parts.slice(1).join(", "))}`} return esc(a)}
 function cleanCodeLabel(x,fallback){return airportCode(x)||val(fallback)||""}
 function cleanHotelName(x){let s=val(x)||"Hotel"; return s.replace(/\s+by\s+Marriott\b/ig,"").replace(/\s+by\s+Hilton\b/ig,"").replace(/\s+by\s+IHG\b/ig,"").replace(/\s+/g," ").trim()}
@@ -125,14 +130,17 @@ function passengerLine(f){const who=initialsName(f.traveler)||""; const pieces=[
 
 function carCompany(c){return val(c.company)||val(c.rentalCompany)||val(c.rentalCompanyName)||"Rental Car"}
 function carBits(c){
-  const pickFull=airportDisplay(c.pickupLocation,"Airport");
-  const retFull=airportDisplay(c.returnLocation,"Airport");
-  const pickCode=cleanCodeLabel(c.pickupLocation,"");
-  const retCode=cleanCodeLabel(c.returnLocation,"");
+  const pickCode=cleanCodeLabel(c.pickupLocation||c.pickupCode||c.pickupAirport,"");
+  const retCode=cleanCodeLabel(c.returnLocation||c.returnCode||c.returnAirport,"");
+  const pickFull=airportDisplay(c.pickupLocation||c.pickupName||c.pickupAirport,"Airport");
+  const retFull=airportDisplay(c.returnLocation||c.returnName||c.returnAirport,"Airport");
+  const pickShort=airportSummaryLabel(c.pickupLocation||c.pickupName||c.pickupAirport,"Airport");
+  const retShort=airportSummaryLabel(c.returnLocation||c.returnName||c.returnAirport,"Airport");
   const pickupLine=`${compactDate(c.pickupDate)}${has(c.pickupTime)?", "+val(c.pickupTime):""}${has(pickCode)?` (${pickCode})`:""}`.trim();
   const returnLine=`${compactDate(c.returnDate)}${has(c.returnTime)?", "+val(c.returnTime):""}${has(retCode)?` (${retCode})`:""}`.trim();
-  const vehicle=val(c.carClass)||val(c.vehicle)||val(c.vehicleType)||"";
-  return {pickFull,retFull,pickCode,retCode,pickupLine,returnLine,vehicle,company:carCompany(c)};
+  const vehicle=firstVal(c,["carClass","vehicle","vehicleType","vehicleClass","carType"]);
+  const example=firstVal(c,["vehicleExample","carExample","exampleVehicle"]);
+  return {pickFull,retFull,pickShort,retShort,pickCode,retCode,pickupLine,returnLine,vehicle,example,company:carCompany(c)};
 }
 function hotelBits(h){
   const rawAddress=cleanAddress(h.address||[h.street,h.city,h.state,h.zip].filter(has).join(", "));
@@ -197,8 +205,8 @@ function renderFlightSummary(flights){
 function renderRentalSummary(cars){
   if(!cars.length)return "";
   const body=cars.map(c=>{const b=carBits(c); return `<div class="card"><div class="label">${brand("car","CAR")}<span>Rental Car${b.company&&b.company!=="Rental Car"?" · "+esc(b.company):""}</span></div>
-    <div class="kv"><strong>Pickup:</strong> ${esc(b.pickFull)}</div>
-    <div class="kv"><strong>Return:</strong> ${esc(b.retFull)}</div>
+    <div class="kv"><strong>Pickup:</strong> ${esc(b.pickShort)}</div>
+    <div class="kv"><strong>Return:</strong> ${esc(b.retShort)}</div>
     <div class="route">${esc(b.pickCode||"Pickup")} pickup → ${esc(b.retCode||"Return")} return</div>
     <div class="timeblock">${esc(b.pickupLine)} → ${esc(b.returnLine)}</div>
     ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
@@ -232,25 +240,73 @@ function renderFlightDetail(flights){
 }
 function renderRentalDetail(cars){
   if(!cars.length)return "";
-  const body=cars.map(c=>{const b=carBits(c); const detail=[c.pickupAddress,c.returnAddress,c.pickupLocation,c.returnLocation].filter(has).join(" · "); return `<div class="card"><div class="label">${brand("car","CAR")}<span>Rental Detail${b.company&&b.company!=="Rental Car"?" · "+esc(b.company):""}</span></div>
-    <div class="route">${esc(b.pickCode||"Pickup")} pickup → ${esc(b.retCode||"Return")} return</div>
-    <div class="timeblock">${esc(b.pickupLine)} → ${esc(b.returnLine)}</div>
-    ${has(b.vehicle)?`<div class="small">${esc(b.vehicle)}</div>`:""}
-    ${has(detail)?`<div class="small">${esc(detail)}</div>`:""}
-    ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
-  </div>`}).join("");
+  const body=cars.map(c=>{
+    const b=carBits(c);
+    const pickupName=firstVal(c,["pickupName","pickupLocationName","pickupAirportName"])||b.pickFull;
+    const returnName=firstVal(c,["returnName","returnLocationName","returnAirportName"])||b.retFull;
+    const pickupAddress=firstVal(c,["pickupAddress","pickupStreetAddress","pickupFullAddress","pickupLocationAddress"]);
+    const returnAddress=firstVal(c,["returnAddress","returnStreetAddress","returnFullAddress","returnLocationAddress"]);
+    const pickupPhone=firstVal(c,["pickupPhone","pickupPhoneNumber","pickupLocationPhone"]);
+    const returnPhone=firstVal(c,["returnPhone","returnPhoneNumber","returnLocationPhone"]);
+    const account=firstVal(c,["accountNumber","account","corporateAccount","discountCode","rateCode"]);
+    const transmission=firstVal(c,["transmission"]);
+    const extras=firstVal(c,["includedExtras","extras","included","coverage","damageWaiver"]);
+    const mileage=firstVal(c,["mileage","mileageDetails","unlimitedMileage"]);
+    const cost=firstVal(c,["cost","rentalCost","totalCost","total","price"]);
+    const instructions=firstVal(c,["instructions","pickupInstructions","returnInstructions"]);
+    const notes=firstVal(c,["detailNotes","details","notes"]);
+    return `<div class="card"><div class="label">${brand("car","CAR")}<span>Rental Detail${b.company&&b.company!=="Rental Car"?" · "+esc(b.company):""}</span></div>
+      <div class="route">${esc(b.pickCode||"Pickup")} pickup → ${esc(b.retCode||"Return")} return</div>
+      <div class="timeblock">${esc(b.pickupLine)} → ${esc(b.returnLine)}</div>
+      ${has(account)?`<div class="extra-lines">${detailLine("Account",account)}</div>`:""}
+      <div class="extra-lines">
+        ${detailLine("Pickup",pickupName)}
+        ${has(pickupAddress)?detailLinkLine("Pickup address",pickupAddress,mapsHref(pickupAddress)):""}
+        ${has(pickupPhone)?`<div class="extra-line"><strong>Pickup phone:</strong> <a href="tel:${esc(phoneDigits(pickupPhone))}">${esc(pickupPhone)}</a></div>`:""}
+        ${detailLine("Return",returnName)}
+        ${has(returnAddress)?detailLinkLine("Return address",returnAddress,mapsHref(returnAddress)):""}
+        ${has(returnPhone)?`<div class="extra-line"><strong>Return phone:</strong> <a href="tel:${esc(phoneDigits(returnPhone))}">${esc(returnPhone)}</a></div>`:""}
+        ${has(b.vehicle)||has(b.example)?detailLine("Vehicle",[b.vehicle,b.example].filter(has).join(" — ")):""}
+        ${detailLine("Transmission",transmission)}
+        ${detailLine("Included extras",extras)}
+        ${detailLine("Mileage",mileage)}
+        ${detailLine("Cost",cost)}
+        ${detailLine("Instructions",instructions)}
+        ${detailLine("Notes",notes)}
+      </div>
+      ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
+    </div>`}).join("");
   return section("🚗","Rental Detail","Reservation details",body);
 }
 function renderHotelDetail(hotels){
   if(!hotels.length)return "";
-  const body=hotels.map(h=>{const b=hotelBits(h); const digits=phoneDigits(b.phone); const addrHtml=addressHtml(b.address); return `<div class="card"><div class="label">${brand("hotel","HTL")}<span>Hotel Detail</span></div>
-    <div class="big">${esc(b.name)}</div>
-    ${has(b.dates)?`<div class="med">${esc(b.dates)}</div>`:""}
-    ${has(b.room)?`<div class="small">${esc(b.room)}</div>`:""}
-    ${has(b.address)?`<a class="linkline" href="${esc(mapsHref(b.address))}" target="_blank" rel="noopener">${addrHtml}</a>`:""}
-    ${has(b.phone)?`<a class="linkline phone" href="tel:${esc(digits)}">${esc(b.phone)}</a>`:""}
-    ${has(b.conf)?`<div class="confirmation">${esc(b.conf)}</div>`:""}
-  </div>`}).join("");
+  const body=hotels.map(h=>{
+    const b=hotelBits(h); const digits=phoneDigits(b.phone); const addrHtml=addressHtml(b.address);
+    const fullName=firstVal(h,["fullHotelName","marketingName"])||val(h.hotelName||h.name)||b.name;
+    const checkInTime=firstVal(h,["checkInTime","checkinTime"]);
+    const checkOutTime=firstVal(h,["checkOutTime","checkoutTime"]);
+    const roomCount=firstVal(h,["roomCount","rooms"]);
+    const guestCount=firstVal(h,["guestCount","guests"]);
+    const totalStay=firstVal(h,["totalStay","totalCost","total","cost","price"]);
+    const hotelNotes=firstVal(h,["detailNotes","details","notes"]);
+    const nightCount=firstVal(h,["nights","numberOfNights"])||nights(h.checkInDate||h.checkIn,h.checkOutDate||h.checkOut);
+    return `<div class="card"><div class="label">${brand("hotel","HTL")}<span>Hotel Detail</span></div>
+      <div class="big">${esc(fullName)}</div>
+      ${has(b.dates)?`<div class="med">${esc(b.dates)}</div>`:""}
+      ${has(b.room)?`<div class="small">${esc(b.room)}</div>`:""}
+      ${has(b.address)?`<a class="linkline" href="${esc(mapsHref(b.address))}" target="_blank" rel="noopener">${addrHtml}</a>`:""}
+      ${has(b.phone)?`<a class="linkline phone" href="tel:${esc(digits)}">${esc(b.phone)}</a>`:""}
+      <div class="extra-lines">
+        ${detailLine("Check-in",checkInTime)}
+        ${detailLine("Check-out",checkOutTime)}
+        ${detailLine("Nights",nightCount)}
+        ${detailLine("Rooms",roomCount)}
+        ${detailLine("Guests",guestCount)}
+        ${detailLine("Total stay",totalStay)}
+        ${detailLine("Notes",hotelNotes)}
+      </div>
+      ${has(b.conf)?`<div class="confirmation">${esc(b.conf)}</div>`:""}
+    </div>`}).join("");
   return section("🏨","Hotel Detail","Property details",body);
 }
 function renderDaily(items){if(!items.length)return ""; const rows=items.map(s=>`<div class="summary-row"><div class="summary-time">${esc(formatDate(s.date,{weekday:true}).replace(",", ""))}<br>${esc(s.time)}</div><div><div class="summary-title">${esc(s.title||s.type||"Schedule Item")}</div>${has(s.location)?`<div class="summary-sub">${esc(s.location)}</div>`:""}</div></div>`).join(""); return section("📅","Daily Schedule","Optional activities",`<div class="card">${rows}</div>`)}
@@ -266,7 +322,7 @@ function render(data){
   const summaries=`${renderFlightSummary(flights)}${renderRentalSummary(cars)}${renderHotelSummary(hotels)}${renderIceSummary(ice)}`;
   const details=`${renderFlightDetail(flights)}${renderRentalDetail(cars)}${renderHotelDetail(hotels)}`;
   const empty=(!flights.length&&!cars.length&&!hotels.length&&!ice.length)?`<section class="section"><div class="empty">No reservation details added yet.</div></section>`:"";
-  document.getElementById("app").innerHTML=`${top}${summaries}${details}${empty}${renderDaily(daily)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets · v6.1</div>`;
+  document.getElementById("app").innerHTML=`${top}${summaries}${details}${empty}${renderDaily(daily)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets · v7</div>`;
 }
 async function loadTrip(){try{const res=await fetch(`${WEB_APP_URL}?action=trip&tripId=${encodeURIComponent(tripId)}`); if(!res.ok)throw new Error("Network response was not ok"); const json=await res.json(); if(!json.ok)throw new Error(json.error||"Unknown error"); render(json.data)}catch(err){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Could not load trip data.<br><br>${esc(err.message)}`;}}
 loadTrip();
