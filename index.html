@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Stan Travel Dashboard</title>
-<!-- dashboard-version: 2026-06-08-v6-travel-day-summary-detail -->
+<!-- dashboard-version: 2026-06-08-v6.1-flightExtras-hotfix -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -170,6 +170,24 @@ function cleanIceTitle(s){
   return type;
 }
 
+
+function flightExtras(f){
+  const pairs = [
+    ["Aircraft", f.aircraft || f.planeType || f.equipment],
+    ["Flight time", f.duration || f.flightTime],
+    ["Departure terminal", f.departTerminal || f.departureTerminal],
+    ["Arrival terminal", f.arriveTerminal || f.arrivalTerminal],
+    ["Gate", f.gate],
+    ["Boarding", f.boardingTime],
+    ["Baggage", f.baggage || f.baggageClaim],
+    ["Notes", f.notes]
+  ];
+  return pairs
+    .filter(([label,value]) => has(value))
+    .map(([label,value]) => `<div class="extra-line"><strong>${esc(label)}:</strong> ${esc(value)}</div>`)
+    .join("");
+}
+
 function renderFlightSummary(flights){
   if(!flights.length)return "";
   const groups=groupFlights(flights);
@@ -248,7 +266,7 @@ function render(data){
   const summaries=`${renderFlightSummary(flights)}${renderRentalSummary(cars)}${renderHotelSummary(hotels)}${renderIceSummary(ice)}`;
   const details=`${renderFlightDetail(flights)}${renderRentalDetail(cars)}${renderHotelDetail(hotels)}`;
   const empty=(!flights.length&&!cars.length&&!hotels.length&&!ice.length)?`<section class="section"><div class="empty">No reservation details added yet.</div></section>`:"";
-  document.getElementById("app").innerHTML=`${top}${summaries}${details}${empty}${renderDaily(daily)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets · v6</div>`;
+  document.getElementById("app").innerHTML=`${top}${summaries}${details}${empty}${renderDaily(daily)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets · v6.1</div>`;
 }
 async function loadTrip(){try{const res=await fetch(`${WEB_APP_URL}?action=trip&tripId=${encodeURIComponent(tripId)}`); if(!res.ok)throw new Error("Network response was not ok"); const json=await res.json(); if(!json.ok)throw new Error(json.error||"Unknown error"); render(json.data)}catch(err){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Could not load trip data.<br><br>${esc(err.message)}`;}}
 loadTrip();
