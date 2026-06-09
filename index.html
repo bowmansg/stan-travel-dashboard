@@ -4,30 +4,81 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Stan Travel Dashboard</title>
-<!-- dashboard-version: 2026-06-08-v2-conditional-order-streamlined-cards -->
+<!-- dashboard-version: 2026-06-08-v5-summary-detail-layout -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --page:#f4f4f2;--panel:#fff;--card:#f1f1ef;--ink:#121212;--muted:#5d6268;--muted2:#81868b;
-  --line:#dcdedb;--softline:#e9e9e6;--black:#111827;--shadow:0 10px 26px rgba(15,23,42,.065);
-  --ua:#0b66d8;--car:#0f7a3e;--hotel:#0b7d63;--ice:#111827;
+:root {
+  --page:#f4f4f2; --panel:#ffffff; --card:#f1f1ef; --ink:#111111; --muted:#555b61; --muted2:#7b8086;
+  --line:#d7d9d5; --soft:#e9e9e5; --shadow:0 10px 26px rgba(15,23,42,.065);
+  --ua:#0b66d8; --car:#0f7a3e; --hotel:#0b7d63; --ice:#111827; --note:#7c3aed;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}.wrap{width:100%;max-width:820px;margin:0 auto;padding:12px}.status{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;color:#70757a;text-align:center;font-weight:800}.error{background:#fff2f0;border-color:#ffc9c2;color:#b42318}
-.topbar{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px}.topline{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}h1{margin:0;font-size:32px;line-height:1.02;letter-spacing:-1.25px;font-weight:900}.date-range{font-size:17px;font-weight:800;color:#3f4348;white-space:nowrap;padding-top:4px}.subline{color:var(--muted2);font-size:14px;font-weight:800;line-height:1.35}
-.section{background:var(--panel);border:1px solid #d4d6d2;border-radius:26px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}.section-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.iconbox{width:50px;height:50px;border-radius:18px;background:#f0f1ef;display:flex;align-items:center;justify-content:center;font-size:27px;flex:0 0 auto;border:1px solid var(--softline)}.section-head h2{margin:0;font-size:24px;line-height:1.05;letter-spacing:-.7px;font-weight:900}.section-head p{margin:2px 0 0;color:#52565b;font-weight:800;font-size:15px}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.info-tile{background:var(--card);border:1px solid var(--softline);border-radius:20px;padding:14px;min-height:100px}.eyebrow{color:#74787e;font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;margin-bottom:8px}.tile-main{font-size:21px;line-height:1.13;letter-spacing:-.45px;font-weight:900}.tile-sub{margin-top:6px;color:#4f5358;font-size:15px;line-height:1.24;font-weight:700}
-.brand{width:34px;height:34px;border-radius:9px;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;letter-spacing:.03em;flex:0 0 auto;background:var(--black)}.brand.flight{background:var(--ua)}.brand.car{background:var(--car)}.brand.hotel{background:var(--hotel)}.brand.ice{background:var(--ice)}
-.card{background:var(--card);border:1px solid var(--softline);border-radius:22px;padding:14px;margin-top:10px}.card-label{display:flex;align-items:center;gap:10px;color:#6f7377;font-size:14px;text-transform:uppercase;letter-spacing:.075em;font-weight:900;margin-bottom:12px}.card-title{font-size:21px;line-height:1.16;font-weight:900;letter-spacing:-.35px}.card-sub{color:#4d5157;font-size:16px;line-height:1.32;font-weight:750;margin-top:5px}.confirmation{margin-top:13px;font-size:23px;line-height:1.1;letter-spacing:.045em;font-weight:900;color:#0e0e0e}.muted{color:#6b7076}.divider{border-top:1px solid #dedfdb;margin:12px 0}.empty{background:var(--panel);border:1px dashed #c8cac7;border-radius:20px;padding:16px;color:#70757a;text-align:center;font-weight:800}
-.flight-row{padding:12px 0;border-top:1px solid #dedfdb}.flight-row:first-of-type{border-top:0;padding-top:0}.flight-main{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.flight-title{font-size:19px;font-weight:900;letter-spacing:-.3px;line-height:1.2}.flight-time{color:#4b4f55;font-size:15px;font-weight:850;text-align:right;line-height:1.25}.passenger-lines{margin-top:8px;display:grid;gap:6px}.passenger-line{display:flex;align-items:baseline;justify-content:space-between;gap:10px;color:#4f5358;font-size:14px;font-weight:800;line-height:1.25}.passenger-code{color:#151515;font-size:15px;font-weight:900;letter-spacing:.035em;white-space:nowrap}
-.route-line{font-size:18px;font-weight:900;letter-spacing:-.25px;margin-top:8px}.time-line{font-size:17px;color:#3f4348;line-height:1.35;font-weight:850;margin-top:10px}.field-line{font-size:16px;color:#4d5157;line-height:1.35;font-weight:800;margin-top:7px}.hotel-address,.phone-link{display:block;color:#171717;font-size:16px;line-height:1.35;font-weight:850;margin-top:11px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}.phone-link{margin-top:4px}.room-line{font-size:16px;color:#4d5157;line-height:1.35;font-weight:850;margin-top:7px}
-.schedule-card{background:var(--card);border:1px solid var(--softline);border-radius:22px;padding:14px}.schedule-date{font-size:18px;font-weight:900;color:#4d5157;letter-spacing:-.25px;border-top:1px solid #dedfdb;padding-top:12px;margin-top:12px}.schedule-date:first-child{border-top:0;padding-top:0;margin-top:0}.schedule-row{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px 0;border-top:1px solid #e7e7e3}.schedule-date + .schedule-row{border-top:0}.schedule-time{font-size:17px;font-weight:900;letter-spacing:-.25px}.schedule-title{font-size:18px;font-weight:900;letter-spacing:-.25px;line-height:1.22}.schedule-sub{color:#555a60;margin-top:2px;font-size:14px;font-weight:750;line-height:1.3}.footer{text-align:center;color:#8b9095;font-size:12px;font-weight:700;margin:18px 0 8px}
-.compact-card{padding:16px}.compact-card .field-line{margin-top:5px}.compact-card .route-line{margin-top:12px}.compact-card .time-line{margin-top:8px}.compact-card .confirmation{font-size:26px;margin-top:16px;letter-spacing:.055em}.section-head p:empty{display:none}
-@media(max-width:720px){.wrap{padding:10px}.topbar{border-radius:20px;padding:14px}.topline{display:block}h1{font-size:28px}.date-range{font-size:15px;margin-top:6px}.section{border-radius:24px;padding:14px}.info-tile{padding:12px;min-height:98px}.tile-main{font-size:20px}.tile-sub{font-size:15px}.flight-main{display:block}.flight-time{text-align:left;margin-top:3px}.schedule-row{grid-template-columns:88px 1fr;gap:10px}.card-title{font-size:20px}.confirmation{font-size:22px}}
-@media(max-width:430px){.tile-main{font-size:19px}.section-head h2{font-size:23px}.passenger-line{font-size:13px}.passenger-code{font-size:14px}.schedule-title{font-size:17px}.schedule-time{font-size:16px}.schedule-row{grid-template-columns:80px 1fr}.route-line{font-size:17px}.time-line{font-size:16px}}
-@media print{body{background:#fff}.wrap{max-width:none;padding:0}.topbar,.section{box-shadow:none;break-inside:avoid}.footer{display:none}}
+a{color:inherit}
+.wrap{width:100%;max-width:820px;margin:0 auto;padding:10px}
+.status{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;text-align:center;color:#70757a;font-weight:800}
+.error{background:#fff2f0;border-color:#ffc9c2;color:#b42318}
+.topbar,.section{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.topbar{padding:16px;margin-bottom:12px}
+.topline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+h1{margin:0;font-size:31px;line-height:1.02;letter-spacing:-1.2px;font-weight:900}
+.date-range{font-size:16px;font-weight:850;color:#3f4348;white-space:nowrap;padding-top:3px}
+.subline{margin-top:8px;color:var(--muted2);font-size:13px;font-weight:850;line-height:1.35}
+.section{padding:14px;margin-bottom:12px}
+.section-head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.iconbox{width:44px;height:44px;border-radius:16px;background:#f1f2f0;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--soft);flex:0 0 auto}
+.section-head h2{margin:0;font-size:23px;line-height:1.05;letter-spacing:-.65px;font-weight:900}
+.section-head p{margin:2px 0 0;color:#555b61;font-size:14px;font-weight:800}
+.card{background:var(--card);border:1px solid var(--soft);border-radius:18px;padding:13px;margin-top:9px}
+.label{display:flex;align-items:center;gap:9px;margin-bottom:10px;color:#6f7479;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:900}
+.brand{width:31px;height:31px;border-radius:9px;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;letter-spacing:.02em;flex:0 0 auto;background:#111827}
+.flight{background:var(--ua)} .car{background:var(--car)} .hotel{background:var(--hotel)} .ice{background:var(--ice)} .note{background:var(--note)}
+.big{font-size:20px;line-height:1.14;font-weight:900;letter-spacing:-.35px}
+.med{font-size:16px;line-height:1.3;font-weight:850;color:#3f444a;margin-top:5px}
+.small{font-size:14px;line-height:1.35;font-weight:750;color:#545a60;margin-top:4px}
+.confirmation{margin-top:13px;font-size:25px;line-height:1.05;letter-spacing:.05em;font-weight:900;color:#0d0d0d}
+.divider{height:1px;background:#ddddda;margin:11px 0}
+.summary-list{display:grid;gap:9px}
+.summary-row{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px solid #dedfdb}
+.summary-row:first-child{border-top:0;padding-top:0}
+.summary-time{font-weight:900;font-size:15px;line-height:1.25;white-space:nowrap}
+.summary-title{font-weight:900;font-size:16px;line-height:1.2;letter-spacing:-.2px}
+.summary-sub{font-size:12px;color:#555b61;font-weight:750;line-height:1.25;margin-top:2px}
+.kv{font-size:15px;line-height:1.35;font-weight:800;color:#40464d;margin-top:5px}
+.route{font-size:17px;line-height:1.25;font-weight:900;letter-spacing:-.2px;margin-top:10px}
+.timeblock{font-size:16px;line-height:1.3;font-weight:850;color:#30363d;margin-top:8px}
+.linkline{display:block;margin-top:9px;font-size:15px;line-height:1.35;font-weight:850;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.phone{margin-top:4px}
+.detail-row{padding:10px 0;border-top:1px solid #dedfdb}
+.detail-row:first-child{border-top:0;padding-top:0}
+.detail-title{font-size:18px;font-weight:900;letter-spacing:-.25px;line-height:1.2}
+.detail-meta{font-size:14px;font-weight:800;color:#4f555b;line-height:1.35;margin-top:3px}
+.passenger-line{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:13px;color:#4f555b;font-weight:800}
+.passenger-code{font-size:14px;color:#111;font-weight:900;white-space:nowrap}
+.footer{text-align:center;color:#8b9095;font-size:11px;font-weight:700;margin:16px 0 8px}
+.empty{background:var(--panel);border:1px dashed #c8cac7;border-radius:18px;padding:14px;color:#70757a;text-align:center;font-weight:800}
+@media(max-width:720px){
+  .wrap{padding:8px}
+  .topbar,.section{border-radius:20px}
+  .topbar{padding:13px}
+  .topline{display:block}
+  h1{font-size:27px}
+  .date-range{font-size:14px;margin-top:5px}
+  .section{padding:12px}
+  .iconbox{width:40px;height:40px;border-radius:14px;font-size:22px}
+  .section-head h2{font-size:22px}
+  .card{padding:12px;border-radius:17px}
+  .summary-row{grid-template-columns:72px 1fr;gap:8px}
+  .confirmation{font-size:24px}
+}
+@media(max-width:410px){
+  .summary-row{grid-template-columns:67px 1fr}
+  .summary-time{font-size:14px}
+  .summary-title{font-size:15px}
+  .big{font-size:19px}
+}
 </style>
 </head>
 <body><main class="wrap"><div id="app" class="status">Loading travel dashboard…</div></main>
@@ -40,133 +91,153 @@ function val(x){return x===undefined||x===null?"":String(x).trim()}
 function has(x){return val(x).length>0}
 function esc(x){return val(x).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function toTitleCase(s){return val(s).toLowerCase().replace(/\b([a-z])/g,c=>c.toUpperCase()).replace(/\bUsa\b/g,"USA")}
-function deCapsName(s){const raw=val(s);if(!raw)return "";return raw===raw.toUpperCase()?toTitleCase(raw):raw}
-function formatDate(dateStr, includeYear=true){const s=val(dateStr);if(!s)return "";const p=s.split("-");if(p.length===3){const d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));return d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric",year:includeYear?"numeric":undefined})}return s}
-function compactDate(dateStr){const s=val(dateStr);if(!s)return "";const p=s.split("-");if(p.length===3){const d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));return d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}return s}
-function tripRange(start,end){const a=compactDate(start),b=compactDate(end);if(a&&b&&a!==b)return `${a} – ${b}, ${val(start).slice(0,4)}`;return a||b||""}
-function dateRangeShort(start,end){const a=formatDate(start,false),b=formatDate(end,false);if(a&&b&&a!==b)return `${a} → ${b}`;return a||b||""}
-function nights(start,end){const a=val(start).split("-"),b=val(end).split("-");if(a.length!==3||b.length!==3)return "";const d1=new Date(Number(a[0]),Number(a[1])-1,Number(a[2]));const d2=new Date(Number(b[0]),Number(b[1])-1,Number(b[2]));const n=Math.round((d2-d1)/(1000*60*60*24));return n>0?`${n} night${n===1?"":"s"}`:""}
-function initialsName(name){const s=val(name).replace(/;/g,",").trim();if(!s)return "";return s.split(",").map(part=>part.trim()).filter(Boolean).map(part=>{part=deCapsName(part);const words=part.split(/\s+/).filter(Boolean);if(words.length===1)return words[0];const first=words[0][0]||"";const last=words[words.length-1];return `${first}. ${last}`}).join(" / ")}
-function flightTitle(f){return [f.airline,f.flightNumber].filter(has).join(" ")}
-function route(f){return [f.fromCode,f.toCode].filter(has).join(" → ")}
-function airlineBrand(a){const s=val(a).toUpperCase();if(s.includes("UNITED"))return "UA";if(s.includes("AMERICAN"))return "AA";if(s.includes("DELTA"))return "DL";return (a||"FL").slice(0,2).toUpperCase()}
-function getCarCompany(c){return val(c.company)||val(c.rentalCompany)||val(c.rentalCompanyName)||"Rental Car"}
-function airportCode(x){const s=val(x);const paren=s.match(/\(([A-Z]{3})\)/);if(paren)return paren[1];const m=s.match(/\b[A-Z]{3}\b/);return m?m[0]:""}
-function cleanAirportName(x,fallback){let s=val(x);if(!s)return fallback||"";s=s.replace(/\bUnited States\b/gi,"").replace(/\bUSA\b/g,"").replace(/,\s*,/g,",").replace(/\s+/g," ").replace(/,\s*$/g,"").trim();const code=airportCode(s);let name=s.replace(/[()]/g,"").replace(new RegExp(`\\b${code}\\b`,"g"),"").replace(/\s+/g," ").replace(/,\s*$/g,"").trim();if(name.length>36)name=name.split(",")[0];if(code && !name.toUpperCase().includes(code)) return `${name||fallback||code} (${code})`;return name||code||fallback||""}
-function cleanCodeLabel(x,fallback){return airportCode(x)||val(fallback)||cleanAirportName(x,fallback)||""}
-function cleanHotelName(x){let s=val(x)||"Hotel";s=s.replace(/\s+by\s+Marriott\b/ig,"").replace(/\s+by\s+Hilton\b/ig,"").replace(/\s+by\s+IHG\b/ig,"").replace(/\s+/g," ").trim();return s}
-function cleanAddress(a){return val(a).replace(/\bUnited States\b/ig,"").replace(/\bUSA\b/g,"").replace(/,\s*,/g,",").replace(/,\s*$/g,"").trim()}
-function mapsHref(address){const a=cleanAddress(address);return a?`https://maps.apple.com/?q=${encodeURIComponent(a)}`:""}
+function deCapsName(s){const raw=val(s); if(!raw)return ""; return raw===raw.toUpperCase()?toTitleCase(raw):raw}
+function formatDate(dateStr, opts={}){const s=val(dateStr); if(!s)return ""; const p=s.split("-"); if(p.length===3){const d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2])); return d.toLocaleDateString(undefined,{weekday:opts.weekday?"short":undefined,month:"short",day:"numeric",year:opts.year?"numeric":undefined})} return s}
+function compactDate(s){return formatDate(s,{})}
+function dateRange(start,end){const a=compactDate(start),b=compactDate(end); if(a&&b&&a!==b)return `${a} – ${b}, ${val(start).slice(0,4)}`; return a||b||""}
+function dateArrow(start,end){const a=formatDate(start,{weekday:true}),b=formatDate(end,{weekday:true}); if(a&&b&&a!==b)return `${a} → ${b}`; return a||b||""}
+function nights(start,end){const a=val(start).split("-"),b=val(end).split("-"); if(a.length!==3||b.length!==3)return ""; const d1=new Date(+a[0],+a[1]-1,+a[2]); const d2=new Date(+b[0],+b[1]-1,+b[2]); const n=Math.round((d2-d1)/(86400000)); return n>0?`${n} night${n===1?"":"s"}`:""}
+function initialsName(name){const s=val(name).replace(/;/g,","); if(!s)return ""; return s.split(",").map(p=>p.trim()).filter(Boolean).map(p=>{p=deCapsName(p); const w=p.split(/\s+/).filter(Boolean); if(w.length===1)return w[0]; return `${w[0][0]}. ${w[w.length-1]}`}).join(" / ")}
+function cleanAirportName(x,fallback){let s=val(x); if(!s)return fallback||""; s=s.replace(/\bUnited States\b/ig,"").replace(/\bUSA\b/g,"").replace(/,\s*,/g,",").replace(/,\s*$/,"").trim(); const code=airportCode(s); let name=s.replace(/[()]/g,"").replace(new RegExp(`\\b${code}\\b`,"g"),"").replace(/\s+/g," ").replace(/,\s*$/,"").trim(); if(name.length>34)name=name.split(",")[0]; if(/^airport$/i.test(name)||!name)name=fallback||"Airport"; if(code && !name.toUpperCase().includes(code))return `${name} (${code})`; return name||code||fallback||""}
+function airportCode(x){const s=val(x); const p=s.match(/\(([A-Z]{3})\)/); if(p)return p[1]; const m=s.match(/\b[A-Z]{3}\b/); return m?m[0]:""}
+function cleanCodeLabel(x,fallback){return airportCode(x)||val(fallback)||""}
+function cleanHotelName(x){let s=val(x)||"Hotel"; return s.replace(/\s+by\s+Marriott\b/ig,"").replace(/\s+by\s+Hilton\b/ig,"").replace(/\s+by\s+IHG\b/ig,"").replace(/\s+/g," ").trim()}
+function cleanAddress(a){return val(a).replace(/\bUnited States\b/ig,"").replace(/\bUSA\b/g,"").replace(/,\s*,/g,",").replace(/,\s*$/,"").trim()}
+function mapsHref(a){a=cleanAddress(a); return a?`https://maps.apple.com/?q=${encodeURIComponent(a)}`:""}
 function phoneDigits(p){return val(p).replace(/[^0-9+]/g,"")}
+function airlineBrand(a){const s=val(a).toUpperCase(); if(s.includes("UNITED"))return "UA"; if(s.includes("AMERICAN"))return "AA"; if(s.includes("DELTA"))return "DL"; return (a||"FL").slice(0,2).toUpperCase()}
 function section(icon,title,sub,body){return `<section class="section"><div class="section-head"><div class="iconbox">${icon}</div><div><h2>${esc(title)}</h2>${has(sub)?`<p>${esc(sub)}</p>`:""}</div></div>${body}</section>`}
-function groupFlights(flights){const map=new Map();flights.forEach(f=>{const key=[f.date,f.airline,f.flightNumber,f.fromCode,f.toCode,f.departTime,f.arriveTime].map(val).join("|");if(!map.has(key))map.set(key,{base:f,items:[]});map.get(key).items.push(f)});return [...map.values()]}
-function passengerLine(f){const who=initialsName(f.traveler)||initialsName(f.notes)||"";const pieces=[];if(has(f.confirmation))pieces.push(esc(f.confirmation));if(has(f.seat))pieces.push(`Seat ${esc(f.seat)}`);if(!who&&!pieces.length)return "";return `<div class="passenger-line"><span>${esc(who||"Traveler")}</span><span class="passenger-code">${pieces.join(" · ")}</span></div>`}
-function renderExecutive(trip){return section("📋","Executive Summary","All bookings at a glance",`<div class="summary-grid"><div class="info-tile"><div class="eyebrow">Trip Dates</div><div class="tile-main">${esc(tripRange(trip.startDate,trip.endDate))}</div><div class="tile-sub">${esc([nights(trip.startDate,trip.endDate),trip.primaryCity].filter(has).join(" · "))}</div></div><div class="info-tile"><div class="eyebrow">Traveler</div><div class="tile-main">${esc(initialsName(trip.traveler)||trip.traveler||"Stan")}</div><div class="tile-sub">${esc(trip.subtitle||"")}</div></div></div>`)}
-function renderFlights(flights){if(!flights.length)return "";const groups=groupFlights(flights);const airline=flights[0].airline||"Flights";const rows=groups.map(g=>{const f=g.base;return `<div class="flight-row"><div class="flight-main"><div class="flight-title">${esc(flightTitle(f)||f.flightNumber||"Flight")} · ${esc(route(f))}</div><div class="flight-time">${esc(compactDate(f.date))}${has(f.departTime)?" · "+esc(f.departTime):""}${has(f.arriveTime)?" → "+esc(f.arriveTime):""}</div></div><div class="passenger-lines">${g.items.map(passengerLine).filter(Boolean).join("")}</div></div>`}).join("");return section("✈️","Flights",airline,`<div class="card"><div class="card-label"><span class="brand flight">${esc(airlineBrand(airline))}</span><span>Flight Info</span></div>${rows}</div>`)}
-function renderCars(cars){
-  if(!cars.length)return "";
-  const body=cars.map(c=>{
-    const company=getCarCompany(c);
-    const pickFull=cleanAirportName(c.pickupLocation,"Pickup");
-    const retFull=cleanAirportName(c.returnLocation,"Return");
-    const pickCode=cleanCodeLabel(c.pickupLocation,"");
-    const retCode=cleanCodeLabel(c.returnLocation,"");
-    const vehicle=val(c.carClass)||val(c.vehicle)||val(c.vehicleType)||val(c.notes);
-    const pickupLine=`${compactDate(c.pickupDate)}${has(c.pickupTime)?", "+val(c.pickupTime):""}${has(pickCode)?` (${pickCode})`:""}`.trim();
-    const returnLine=`${compactDate(c.returnDate)}${has(c.returnTime)?", "+val(c.returnTime):""}${has(retCode)?` (${retCode})`:""}`.trim();
-    return `<div class="card compact-card">
-      <div class="card-label"><span class="brand car">CAR</span><span>Rental Car${company&&company!=="Rental Car"?" · "+esc(company):""}</span></div>
-      <div class="field-line"><strong>Pickup:</strong> ${esc(pickFull)}</div>
-      <div class="field-line"><strong>Return:</strong> ${esc(retFull)}</div>
-      ${has(pickCode)||has(retCode)?`<div class="route-line">${esc(pickCode||"Pickup")} pickup → ${esc(retCode||"Return")} return</div>`:""}
-      ${has(pickupLine)||has(returnLine)?`<div class="time-line">${esc(pickupLine)} → ${esc(returnLine)}</div>`:""}
-      ${has(vehicle)?`<div class="room-line">${esc(vehicle)}</div>`:""}
-      ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
-    </div>`
-  }).join("");
-  return section("🚗","Rental Car","",body)
+function brand(cls,txt){return `<span class="brand ${cls}">${esc(txt)}</span>`}
+function route(f){return [f.fromCode,f.toCode].filter(has).join(" → ")}
+function flightName(f){return [f.airline,f.flightNumber].filter(has).join(" ")}
+function groupFlights(flights){const m=new Map(); flights.forEach(f=>{const k=[f.date,f.airline,f.flightNumber,f.fromCode,f.toCode,f.departTime,f.arriveTime].map(val).join("|"); if(!m.has(k))m.set(k,{base:f,items:[]}); m.get(k).items.push(f)}); return [...m.values()]}
+function passengerLine(f){const who=initialsName(f.traveler)||""; const pieces=[]; if(has(f.confirmation))pieces.push(esc(f.confirmation)); if(has(f.seat))pieces.push(`Seat ${esc(f.seat)}`); if(!who&&!pieces.length)return ""; return `<div class="passenger-line"><span>${esc(who||"Traveler")}</span><span class="passenger-code">${pieces.join(" · ")}</span></div>`}
+
+function carCompany(c){return val(c.company)||val(c.rentalCompany)||val(c.rentalCompanyName)||"Rental Car"}
+function carBits(c){
+  const pickFull=cleanAirportName(c.pickupLocation,"Airport");
+  const retFull=cleanAirportName(c.returnLocation,"Airport");
+  const pickCode=cleanCodeLabel(c.pickupLocation,"");
+  const retCode=cleanCodeLabel(c.returnLocation,"");
+  const pickupLine=`${compactDate(c.pickupDate)}${has(c.pickupTime)?", "+val(c.pickupTime):""}${has(pickCode)?` (${pickCode})`:""}`.trim();
+  const returnLine=`${compactDate(c.returnDate)}${has(c.returnTime)?", "+val(c.returnTime):""}${has(retCode)?` (${retCode})`:""}`.trim();
+  const vehicle=val(c.carClass)||val(c.vehicle)||val(c.vehicleType)||"";
+  return {pickFull,retFull,pickCode,retCode,pickupLine,returnLine,vehicle,company:carCompany(c)};
 }
-function renderHotels(hotels){
-  if(!hotels.length)return "";
-  const body=hotels.map(h=>{
-    const name=cleanHotelName(h.hotelName||h.name);
-    const rawAddress=cleanAddress(h.address||[h.street,h.city,h.state,h.zip].filter(has).join(", "));
-    const map=mapsHref(rawAddress);
-    const phone=val(h.phone||h.phoneNumber);
-    const digits=phoneDigits(phone);
-    const room=val(h.roomType)||val(h.room)||val(h.notes);
-    const dates=dateRangeShort(h.checkInDate||h.checkIn,h.checkOutDate||h.checkOut);
-    const addressHtml=has(rawAddress)?esc(rawAddress).replace(/,\s*/g,"<br>"):"";
-    return `<div class="card compact-card">
-      <div class="card-label"><span class="brand hotel">HTL</span><span>Hotel</span></div>
-      <div class="card-title">${esc(name)}</div>
-      ${has(dates)?`<div class="card-sub">${esc(dates)}</div>`:""}
-      ${has(room)?`<div class="room-line">${esc(room)}</div>`:""}
-      ${has(rawAddress)?`<a class="hotel-address" href="${esc(map)}" target="_blank" rel="noopener">${addressHtml}</a>`:""}
-      ${has(phone)?`<a class="phone-link" href="tel:${esc(digits)}">${esc(phone)}</a>`:""}
-      ${has(h.confirmation)?`<div class="confirmation">${esc(h.confirmation)}</div>`:""}
-    </div>`
-  }).join("");
-  return section("🏨","Hotel","",body)
+function hotelBits(h){
+  const rawAddress=cleanAddress(h.address||[h.street,h.city,h.state,h.zip].filter(has).join(", "));
+  return {
+    name:cleanHotelName(h.hotelName||h.name),
+    dates:dateArrow(h.checkInDate||h.checkIn,h.checkOutDate||h.checkOut),
+    room:val(h.roomType)||val(h.room)||"",
+    address:rawAddress,
+    phone:val(h.phone||h.phoneNumber),
+    conf:val(h.confirmation)
+  };
 }
-function isIceItem(s){const text=[s.title,s.type,s.notes,s.location].map(val).join(" ").toLowerCase();return /(game|skills|practice|team ice|hockey|victorie|victoire|rink|iceplex|opponent|vs\s+)/i.test(text)}
-function cleanScheduleTitle(s){
-  let title=val(s.title)||val(s.opponent)||val(s.type)||"Schedule Item";
-  let type=val(s.type).toLowerCase();
+
+function isIceItem(s){const text=[s.title,s.type,s.notes,s.location,s.opponent].map(val).join(" ").toLowerCase(); return /(game|skills|practice|team ice|hockey|victorie|victoire|rink|iceplex|opponent|vs\s+)/i.test(text)}
+function cleanOpponent(txt){return val(txt).replace(/^(game\s+)?vs\s+/i,"").replace(/^game\s+/i,"").replace(/^with\s+/i,"").trim()}
+function cleanIceType(s){const text=[s.type,s.title].map(val).join(" ").toLowerCase(); if(text.includes("skills"))return "Skills"; if(text.includes("practice"))return "Practice"; if(text.includes("team ice"))return "Team Ice"; if(text.includes("game")||/\bvs\b/i.test(val(s.title)))return "Game"; return toTitleCase(s.type||"Ice")}
+function cleanIceTitle(s){
+  const type=cleanIceType(s);
+  let title=val(s.title)||val(s.opponent)||type;
   title=title.replace(/\s+/g," ").trim();
-
-  // Normalize bad extracted hockey strings like "vs Game vs Fleet Green".
   title=title.replace(/^(vs\s+)?game\s+vs\s+/i,"Game vs ");
-  title=title.replace(/^vs\s+game\s+vs\s+/i,"Game vs ");
-  title=title.replace(/^vs\s+game\s+/i,"Game vs ");
-  title=title.replace(/^vs\s+vs\s+/i,"vs ");
   title=title.replace(/^vs\s+/i,"Game vs ");
-  title=title.replace(/^Game\s+Game\s+vs\s+/i,"Game vs ");
-  title=title.replace(/^Game\s+vs\s+Game\s+vs\s+/i,"Game vs ");
+  if(type==="Game"){
+    const opp=cleanOpponent(title);
+    return opp && !/^game$/i.test(opp)?`Game (${opp})`:"Game";
+  }
+  if(type==="Practice"){
+    let who=title.replace(/^practice\s*(with|[-–—])?\s*/i,"").trim();
+    return who && !/^practice$/i.test(who)?`Practice (${who})`:"Practice";
+  }
+  if(type==="Skills"){
+    let who=title.replace(/^skills\s*(with|[-–—])?\s*/i,"").trim();
+    return who && !/^skills$/i.test(who)?`Skills (${who})`:"Skills";
+  }
+  return type;
+}
 
-  if(type.includes("skills")){
-    title=title.replace(/^skills\s+with\s+/i,"Skills — ").replace(/^skills\s*[-–—]\s*/i,"Skills — ");
-    if(!/^Skills\s*[—-]/i.test(title)) title="Skills — "+title.replace(/^with\s+/i,"").replace(/^Skills\s+/i,"");
-  }
-  if(type.includes("practice")){
-    title=title.replace(/^practice\s+with\s+/i,"Practice — ").replace(/^practice\s*[-–—]\s*/i,"Practice — ");
-    if(!/^Practice\s*[—-]/i.test(title)) title="Practice — "+title.replace(/^with\s+/i,"").replace(/^Practice\s+/i,"");
-  }
-  return title.replace(/\s+/g," ").trim();
+function renderFlightSummary(flights){
+  if(!flights.length)return "";
+  const groups=groupFlights(flights);
+  const rows=groups.map(g=>{const f=g.base; return `<div class="summary-row"><div class="summary-time">${esc(compactDate(f.date))}</div><div><div class="summary-title">${esc(route(f))} · ${esc(f.departTime)} → ${esc(f.arriveTime)}</div><div class="summary-sub">${esc(flightName(f))}</div></div></div>`}).join("");
+  return section("✈️","Flight Executive Summary","Airport quick view",`<div class="card"><div class="label">${brand("flight",airlineBrand(flights[0].airline))}<span>Flight Summary</span></div><div class="summary-list">${rows}</div></div>`);
 }
-function renderScheduleItems(items,title,sub,icon){
+function renderRentalSummary(cars){
+  if(!cars.length)return "";
+  const body=cars.map(c=>{const b=carBits(c); return `<div class="card"><div class="label">${brand("car","CAR")}<span>Rental Car${b.company&&b.company!=="Rental Car"?" · "+esc(b.company):""}</span></div>
+    <div class="kv"><strong>Pickup:</strong> ${esc(b.pickFull)}</div>
+    <div class="kv"><strong>Return:</strong> ${esc(b.retFull)}</div>
+    <div class="route">${esc(b.pickCode||"Pickup")} pickup → ${esc(b.retCode||"Return")} return</div>
+    <div class="timeblock">${esc(b.pickupLine)} → ${esc(b.returnLine)}</div>
+    ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
+  </div>`}).join("");
+  return section("🚗","Rental Car Executive Summary","Pickup and return",body);
+}
+function renderHotelSummary(hotels){
+  if(!hotels.length)return "";
+  const body=hotels.map(h=>{const b=hotelBits(h); const digits=phoneDigits(b.phone); const addrHtml=has(b.address)?esc(b.address).replace(/,\s*/g,"<br>"):""; return `<div class="card"><div class="label">${brand("hotel","HTL")}<span>Hotel</span></div>
+    <div class="big">${esc(b.name)}</div>
+    ${has(b.dates)?`<div class="med">${esc(b.dates)}</div>`:""}
+    ${has(b.room)?`<div class="small">${esc(b.room)}</div>`:""}
+    ${has(b.address)?`<a class="linkline" href="${esc(mapsHref(b.address))}" target="_blank" rel="noopener">${addrHtml}</a>`:""}
+    ${has(b.phone)?`<a class="linkline phone" href="tel:${esc(digits)}">${esc(b.phone)}</a>`:""}
+    ${has(b.conf)?`<div class="confirmation">${esc(b.conf)}</div>`:""}
+  </div>`}).join("");
+  return section("🏨","Hotel Executive Summary","Stay quick view",body);
+}
+function renderIceSummary(items){
   if(!items.length)return "";
-  const sorted=[...items].sort((a,b)=>[val(a.date),val(a.time)].join(" ").localeCompare([val(b.date),val(b.time)].join(" ")));
-  let html=`<div class="schedule-card">`;
-  let last="";
-  sorted.forEach(s=>{
-    const d=formatDate(s.date,false);
-    if(d!==last){html+=`<div class="schedule-date">${esc(d)}</div>`;last=d}
-    const parts=[];
-    if(has(s.location))parts.push(s.location);
-    if(has(s.rink) && !val(s.location).includes(val(s.rink)))parts.push(s.rink);
-    // Keep schedule rows compact: no repeated "Opponent" labels and no extra type if title already says Game/Skills/Practice.
-    if(has(s.endTime))parts.push(`Ends ${s.endTime}`);
-    html+=`<div class="schedule-row"><div class="schedule-time">${esc(s.time)}</div><div><div class="schedule-title">${esc(cleanScheduleTitle(s))}</div>${parts.length?`<div class="schedule-sub">${parts.map(esc).join(" · ")}</div>`:""}</div></div>`
-  });
-  html+=`</div>`;
-  return section(icon,title,sub,html)
+  const rows=[...items].sort((a,b)=>[val(a.date),val(a.time)].join(" ").localeCompare([val(b.date),val(b.time)].join(" "))).map(s=>`<div class="summary-row"><div class="summary-time">${esc(formatDate(s.date,{weekday:true}).replace(",", ""))}<br>${esc(s.time)}</div><div><div class="summary-title">${esc(cleanIceTitle(s))}</div>${has(s.location)||has(s.rink)?`<div class="summary-sub">${esc([s.location,s.rink].filter(has).join(" — "))}</div>`:""}</div></div>`).join("");
+  return section("🏒","Ice Schedule","Team ice and games",`<div class="card"><div class="label">${brand("ice","ICE")}<span>Schedule</span></div>${rows}</div>`);
 }
-function renderNotes(notes){if(!notes.length)return "";const body=notes.map(n=>`<div class="card"><div class="card-title">${esc(n.title||"Note")}</div>${has(n.category)?`<div class="card-sub">${esc(n.category)}</div>`:""}${has(n.note)?`<div class="field-line">${esc(n.note)}</div>`:""}</div>`).join("");return section("📝","Notes","Trip notes",body)}
-function render(data){const trip=data.trip||{},flights=data.flights||[],cars=data.rentalCars||[],hotels=data.hotels||[],schedule=data.schedule||[],notes=data.notes||[];if(!data.trip){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Trip not found for <strong>${esc(tripId)}</strong>.<br>Check the Trips tab and tripId.`;return}
-const ice=schedule.filter(isIceItem);const daily=schedule.filter(s=>!isIceItem(s));
-document.getElementById("app").className="";
-const topCard=`<div class="topbar"><div class="topline"><h1>${esc(trip.tripName||trip.primaryCity||"Trip")}</h1><div class="date-range">${esc(tripRange(trip.startDate,trip.endDate))}</div></div><div class="subline">${esc(deCapsName(trip.traveler)||trip.subtitle||"")}</div></div>`;
-const executive=renderExecutive(trip);
-const gameSection=ice.length?renderScheduleItems(ice,"Game / Ice Schedule","Team ice and games","🏒"):"";
-const travelSections=`${renderFlights(flights)}${renderCars(cars)}${renderHotels(hotels)}`;
-const dailySection=daily.length?renderScheduleItems(daily,"Daily Schedule","Optional activities and notes","📅"):"";
-const notesSection=renderNotes(notes);
-const emptySection=(!flights.length&&!cars.length&&!hotels.length)?`<section class="section"><div class="empty">No reservation details added yet.</div></section>`:"";
-// CONDITIONAL ORDER:
-// With games/team ice: Top → Executive → Game/Ice → Flights → Rental → Hotel → Daily/Notes.
-// Without games/team ice: Top → Executive → Flights → Rental → Hotel → Daily/Notes.
-document.getElementById("app").innerHTML=`${topCard}${executive}${gameSection}${travelSections}${emptySection}${dailySection}${notesSection}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets</div>`}
-async function loadTrip(){try{const url=`${WEB_APP_URL}?action=trip&tripId=${encodeURIComponent(tripId)}`;const res=await fetch(url);if(!res.ok)throw new Error("Network response was not ok");const json=await res.json();if(!json.ok)throw new Error(json.error||"Unknown error");render(json.data)}catch(err){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Could not load trip data.<br><br>${esc(err.message)}`;}}
+
+function renderFlightDetail(flights){
+  if(!flights.length)return "";
+  const rows=groupFlights(flights).map(g=>{const f=g.base; return `<div class="detail-row"><div class="detail-title">${esc(flightName(f)||"Flight")} · ${esc(route(f))}</div><div class="detail-meta">${esc(compactDate(f.date))} · ${esc(f.departTime)} → ${esc(f.arriveTime)}</div>${g.items.map(passengerLine).filter(Boolean).join("")}</div>`}).join("");
+  return section("✈️","Flight Detail",flights[0].airline||"",`<div class="card"><div class="label">${brand("flight",airlineBrand(flights[0].airline))}<span>Flight Detail</span></div>${rows}</div>`);
+}
+function renderRentalDetail(cars){
+  if(!cars.length)return "";
+  const body=cars.map(c=>{const b=carBits(c); const detail=[c.pickupAddress,c.returnAddress,c.pickupLocation,c.returnLocation].filter(has).join(" · "); return `<div class="card"><div class="label">${brand("car","CAR")}<span>Rental Detail${b.company&&b.company!=="Rental Car"?" · "+esc(b.company):""}</span></div>
+    <div class="route">${esc(b.pickCode||"Pickup")} pickup → ${esc(b.retCode||"Return")} return</div>
+    <div class="timeblock">${esc(b.pickupLine)} → ${esc(b.returnLine)}</div>
+    ${has(b.vehicle)?`<div class="small">${esc(b.vehicle)}</div>`:""}
+    ${has(detail)?`<div class="small">${esc(detail)}</div>`:""}
+    ${has(c.confirmation)?`<div class="confirmation">${esc(c.confirmation)}</div>`:""}
+  </div>`}).join("");
+  return section("🚗","Rental Detail","Reservation details",body);
+}
+function renderHotelDetail(hotels){
+  if(!hotels.length)return "";
+  const body=hotels.map(h=>{const b=hotelBits(h); const digits=phoneDigits(b.phone); const addrHtml=has(b.address)?esc(b.address).replace(/,\s*/g,"<br>"):""; return `<div class="card"><div class="label">${brand("hotel","HTL")}<span>Hotel Detail</span></div>
+    <div class="big">${esc(b.name)}</div>
+    ${has(b.dates)?`<div class="med">${esc(b.dates)}</div>`:""}
+    ${has(b.room)?`<div class="small">${esc(b.room)}</div>`:""}
+    ${has(b.address)?`<a class="linkline" href="${esc(mapsHref(b.address))}" target="_blank" rel="noopener">${addrHtml}</a>`:""}
+    ${has(b.phone)?`<a class="linkline phone" href="tel:${esc(digits)}">${esc(b.phone)}</a>`:""}
+    ${has(b.conf)?`<div class="confirmation">${esc(b.conf)}</div>`:""}
+  </div>`}).join("");
+  return section("🏨","Hotel Detail","Property details",body);
+}
+function renderDaily(items){if(!items.length)return ""; const rows=items.map(s=>`<div class="summary-row"><div class="summary-time">${esc(formatDate(s.date,{weekday:true}).replace(",", ""))}<br>${esc(s.time)}</div><div><div class="summary-title">${esc(s.title||s.type||"Schedule Item")}</div>${has(s.location)?`<div class="summary-sub">${esc(s.location)}</div>`:""}</div></div>`).join(""); return section("📅","Daily Schedule","Optional activities",`<div class="card">${rows}</div>`)}
+function renderNotes(notes){if(!notes.length)return ""; const body=notes.map(n=>`<div class="card"><div class="big">${esc(n.title||"Note")}</div>${has(n.category)?`<div class="small">${esc(n.category)}</div>`:""}${has(n.note)?`<div class="small">${esc(n.note)}</div>`:""}</div>`).join(""); return section("📝","Notes","Trip notes",body)}
+
+function render(data){
+  const trip=data.trip||{}, flights=data.flights||[], cars=data.rentalCars||[], hotels=data.hotels||[], schedule=data.schedule||[], notes=data.notes||[];
+  if(!data.trip){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Trip not found for <strong>${esc(tripId)}</strong>.<br>Check the Trips tab and tripId.`;return}
+  const ice=schedule.filter(isIceItem);
+  const daily=schedule.filter(s=>!isIceItem(s));
+  document.getElementById("app").className="";
+  const top=`<div class="topbar"><div class="topline"><h1>${esc(trip.tripName||trip.primaryCity||"Trip")}</h1><div class="date-range">${esc(dateRange(trip.startDate,trip.endDate))}</div></div><div class="subline">${esc(deCapsName(trip.traveler)||"")}</div></div>`;
+  const summaries=`${renderFlightSummary(flights)}${renderRentalSummary(cars)}${renderHotelSummary(hotels)}${renderIceSummary(ice)}`;
+  const details=`${renderFlightDetail(flights)}${renderRentalDetail(cars)}${renderHotelDetail(hotels)}`;
+  const empty=(!flights.length&&!cars.length&&!hotels.length&&!ice.length)?`<section class="section"><div class="empty">No reservation details added yet.</div></section>`:"";
+  document.getElementById("app").innerHTML=`${top}${summaries}${details}${empty}${renderDaily(daily)}${renderNotes(notes)}<div class="footer">Travel dashboard powered by GitHub Pages + Google Sheets · v5</div>`;
+}
+async function loadTrip(){try{const res=await fetch(`${WEB_APP_URL}?action=trip&tripId=${encodeURIComponent(tripId)}`); if(!res.ok)throw new Error("Network response was not ok"); const json=await res.json(); if(!json.ok)throw new Error(json.error||"Unknown error"); render(json.data)}catch(err){document.getElementById("app").className="status error";document.getElementById("app").innerHTML=`Could not load trip data.<br><br>${esc(err.message)}`;}}
 loadTrip();
 </script></body></html>
